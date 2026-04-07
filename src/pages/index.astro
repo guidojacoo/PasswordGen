@@ -1,0 +1,285 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import StatsCard from '../components/StatsCard.astro';
+import HabitCard from '../components/HabitCard.astro';
+import HabitForm from '../components/HabitForm.astro';
+
+const initialHabits = [
+  { id: 1, name: 'Leer 30 minutos', icon: '📚', color: 'bg-blue-100 dark:bg-blue-900', completed: false, streak: 5 },
+  { id: 2, name: 'Hacer ejercicio', icon: '💪', color: 'bg-green-100 dark:bg-green-900', completed: true, streak: 12 },
+  { id: 3, name: 'Beber 2L de agua', icon: '💧', color: 'bg-purple-100 dark:bg-purple-900', completed: false, streak: 8 },
+  { id: 4, name: 'Meditar', icon: '🧘', color: 'bg-orange-100 dark:bg-orange-900', completed: true, streak: 21 },
+  { id: 5, name: 'Correr 5km', icon: '🏃', color: 'bg-pink-100 dark:bg-pink-900', completed: false, streak: 3 },
+  { id: 6, name: 'Dormir 8 horas', icon: '😴', color: 'bg-yellow-100 dark:bg-yellow-900', completed: true, streak: 15 },
+];
+---
+
+<BaseLayout title="Habit Dashboard">
+  <Header darkMode={false} />
+
+  <main class="container mx-auto px-4 py-8">
+    <!-- Sección Inicio -->
+    <section id="inicio" class="mb-12">
+      <div class="text-center mb-8">
+        <h2 class="text-4xl font-bold text-gray-800 dark:text-white mb-2">
+          Bienvenido a tu Dashboard de Hábitos
+        </h2>
+        <p class="text-gray-600 dark:text-gray-400 text-lg">
+          Seguimiento diario de tus hábitos para construir mejores rutinas
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <StatsCard title="Total Hábitos" value="6" icon="📋" color="bg-blue-100 dark:bg-blue-900" change="+2 esta semana" />
+        <StatsCard title="Completados Hoy" value="3" icon="✓" color="bg-green-100 dark:bg-green-900" change="50% completado" />
+        <StatsCard title="Racha Máxima" value="21" icon="🔥" color="bg-orange-100 dark:bg-orange-900" />
+        <StatsCard title="Puntaje" value="85%" icon="⭐" color="bg-purple-100 dark:bg-purple-900" change="+5% vs ayer" />
+      </div>
+    </section>
+
+    <!-- Sección Hábitos -->
+    <section id="habitos" class="mb-12">
+      <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-6">Mis Hábitos</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {initialHabits.map(habit => (
+          <HabitCard habit={habit} />
+        ))}
+      </div>
+    </section>
+
+    <!-- Sección Agregar -->
+    <section class="mb-12">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <HabitForm />
+
+        <div class="bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg p-6 text-white">
+          <h2 class="text-xl font-bold mb-4">💡 Consejo del Día</h2>
+          <p class="text-lg mb-4">
+            "La consistencia es más importante que la intensidad. Es mejor hacer 5 minutos diarios
+            que una hora una vez a la semana."
+          </p>
+          <div class="mt-6 p-4 bg-white/20 rounded-lg backdrop-blur-sm">
+            <p class="text-sm font-medium">Progreso Semanal</p>
+            <div class="w-full bg-white/30 rounded-full h-4 mt-2">
+              <div class="bg-white h-4 rounded-full transition-all duration-500" style="width: 65%"></div>
+            </div>
+            <p class="text-sm mt-2">65% completado (13/20 hábitos)</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección Estadísticas -->
+    <section id="estadisticas" class="mb-12">
+      <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-6">Estadísticas Detalladas</h2>
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Rendimiento por Hábito</h3>
+            <div class="space-y-3">
+              {initialHabits.map(habit => (
+                <div class="flex items-center gap-3">
+                  <span class="text-xl">{habit.icon}</span>
+                  <div class="flex-1">
+                    <div class="flex justify-between mb-1">
+                      <span class="text-sm text-gray-600 dark:text-gray-400">{habit.name}</span>
+                      <span class="text-sm font-medium text-gray-800 dark:text-white">{habit.streak} días</span>
+                    </div>
+                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                      <div
+                        class="h-2 rounded-full transition-all duration-500"
+                        style={`width: ${Math.min(habit.streak * 5, 100)}%; background: ${habit.completed ? '#22c55e' : '#3b82f6'}`}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Actividad Semanal</h3>
+            <div class="flex justify-between items-end h-40">
+              {['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'].map((day, i) => {
+                const heights = [60, 80, 45, 90, 70, 50, 65];
+                return (
+                  <div class="flex flex-col items-center gap-2">
+                    <div
+                      class={`w-8 rounded-lg transition-all duration-300 ${
+                        i === 3 ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-600'
+                      }`}
+                      style={`height: ${heights[i]}%`}
+                    ></div>
+                    <span class="text-xs text-gray-600 dark:text-gray-400">{day}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-12">
+    <div class="container mx-auto px-4 py-6 text-center text-gray-600 dark:text-gray-400">
+      <p>© 2026 Habit Dashboard - Actividad Diagnóstico Frontend</p>
+      <p class="text-sm mt-2">Desarrollado con Astro + Tailwind CSS</p>
+    </div>
+  </footer>
+
+  <script>
+    // Dark mode toggle
+    const themeToggle = document.getElementById('theme-toggle');
+    const html = document.documentElement;
+
+    function toggleDarkMode() {
+      const isDark = html.classList.toggle('dark');
+      themeToggle.textContent = isDark ? '☀️' : '🌙';
+      themeToggle.setAttribute('data-dark-mode', isDark.toString());
+      localStorage.setItem('darkMode', isDark.toString());
+    }
+
+    themeToggle.addEventListener('click', toggleDarkMode);
+
+    // Check for saved dark mode preference
+    if (localStorage.getItem('darkMode') === 'true') {
+      html.classList.add('dark');
+      themeToggle.textContent = '☀️';
+      themeToggle.setAttribute('data-dark-mode', 'true');
+    }
+
+    // Habit card interactions
+    document.querySelectorAll('.habit-card').forEach(card => {
+      const toggleBtn = card.querySelector('button[data-completed]');
+      const deleteBtn = card.querySelector('.delete-habit');
+
+      toggleBtn?.addEventListener('click', () => {
+        const isCompleted = toggleBtn.getAttribute('data-completed') === 'true';
+        toggleBtn.setAttribute('data-completed', (!isCompleted).toString());
+        toggleBtn.textContent = isCompleted ? 'Marcar como completado' : '✓ Completado';
+        toggleBtn.classList.toggle('bg-green-500');
+        toggleBtn.classList.toggle('bg-gray-200');
+        toggleBtn.classList.toggle('dark:bg-gray-700');
+        toggleBtn.classList.toggle('text-white');
+        toggleBtn.classList.toggle('text-gray-700');
+        toggleBtn.classList.toggle('dark:text-gray-300');
+      });
+
+      deleteBtn?.addEventListener('click', () => {
+        if (confirm('¿Estás seguro de eliminar este hábito?')) {
+          card.style.opacity = '0';
+          card.style.transform = 'scale(0.9)';
+          setTimeout(() => card.remove(), 300);
+        }
+      });
+    });
+
+    // Habit form
+    const form = document.getElementById('habit-form');
+    const iconSelector = document.getElementById('icon-selector');
+    const colorSelector = document.getElementById('color-selector');
+    const selectedIcon = document.getElementById('selected-icon');
+    const selectedColor = document.getElementById('selected-color');
+
+    iconSelector?.addEventListener('click', (e) => {
+      if (e.target.classList.contains('icon-option')) {
+        document.querySelectorAll('.icon-option').forEach(btn => {
+          btn.classList.remove('ring-2', 'ring-blue-500');
+        });
+        e.target.classList.add('ring-2', 'ring-blue-500');
+        selectedIcon.value = e.target.getAttribute('data-icon');
+      }
+    });
+
+    colorSelector?.addEventListener('click', (e) => {
+      if (e.target.classList.contains('color-option')) {
+        document.querySelectorAll('.color-option').forEach(btn => {
+          btn.classList.remove('ring-2', 'ring-blue-500', 'ring-offset-2');
+        });
+        e.target.classList.add('ring-2', 'ring-blue-500', 'ring-offset-2');
+        selectedColor.value = e.target.getAttribute('data-color');
+      }
+    });
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = (document.getElementById('habit-name') as HTMLInputElement).value;
+      const icon = selectedIcon.value;
+      const color = selectedColor.value;
+
+      if (name) {
+        const newHabit = {
+          id: Date.now(),
+          name,
+          icon,
+          color,
+          completed: false,
+          streak: 0
+        };
+
+        const habitsGrid = document.querySelector('#habitos .grid');
+        const newCard = document.createElement('div');
+        newCard.className = 'habit-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1';
+        newCard.setAttribute('data-habit-id', newHabit.id.toString());
+        newCard.innerHTML = `
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-14 h-14 rounded-full flex items-center justify-center text-2xl ${color}">
+              ${icon}
+            </div>
+            <div class="text-right">
+              <p class="text-sm text-gray-500 dark:text-gray-400">Racha</p>
+              <p class="text-2xl font-bold text-gray-800 dark:text-white">0 🔥</p>
+            </div>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">${name}</h3>
+          <button
+            class="w-full py-3 rounded-lg font-medium transition-all duration-300 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300"
+            data-completed="false"
+          >
+            Marcar como completado
+          </button>
+          <button class="delete-habit mt-2 text-red-500 hover:text-red-600 text-sm">Eliminar</button>
+        `;
+
+        habitsGrid?.prepend(newCard);
+
+        // Add event listeners to new card
+        const toggleBtn = newCard.querySelector('button[data-completed]');
+        const deleteBtn = newCard.querySelector('.delete-habit');
+
+        toggleBtn?.addEventListener('click', () => {
+          const isCompleted = toggleBtn.getAttribute('data-completed') === 'true';
+          toggleBtn.setAttribute('data-completed', (!isCompleted).toString());
+          toggleBtn.textContent = isCompleted ? 'Marcar como completado' : '✓ Completado';
+          toggleBtn.classList.toggle('bg-green-500');
+          toggleBtn.classList.toggle('bg-gray-200');
+          toggleBtn.classList.toggle('dark:bg-gray-700');
+          toggleBtn.classList.toggle('text-white');
+          toggleBtn.classList.toggle('text-gray-700');
+          toggleBtn.classList.toggle('dark:text-gray-300');
+        });
+
+        deleteBtn?.addEventListener('click', () => {
+          if (confirm('¿Estás seguro de eliminar este hábito?')) {
+            newCard.style.opacity = '0';
+            newCard.style.transform = 'scale(0.9)';
+            setTimeout(() => newCard.remove(), 300);
+          }
+        });
+
+        (document.getElementById('habit-name') as HTMLInputElement).value = '';
+        alert('¡Hábito agregado exitosamente!');
+      }
+    });
+
+    // Smooth scroll for navigation
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = document.querySelector(anchor.getAttribute('href'));
+        target?.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+  </script>
+</BaseLayout>
