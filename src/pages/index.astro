@@ -128,158 +128,27 @@ const initialHabits = [
     </div>
   </footer>
 
+  <script src="../scripts/main.js" client:load></script>
   <script>
-    // Dark mode toggle
+    // Dark mode toggle básico (se complementa con main.js)
     const themeToggle = document.getElementById('theme-toggle');
     const html = document.documentElement;
 
-    function toggleDarkMode() {
-      const isDark = html.classList.toggle('dark');
-      themeToggle.textContent = isDark ? '☀️' : '🌙';
-      themeToggle.setAttribute('data-dark-mode', isDark.toString());
-      localStorage.setItem('darkMode', isDark.toString());
-    }
-
-    themeToggle.addEventListener('click', toggleDarkMode);
-
-    // Check for saved dark mode preference
     if (localStorage.getItem('darkMode') === 'true') {
       html.classList.add('dark');
       themeToggle.textContent = '☀️';
-      themeToggle.setAttribute('data-dark-mode', 'true');
     }
 
-    // Habit card interactions
-    document.querySelectorAll('.habit-card').forEach(card => {
-      const toggleBtn = card.querySelector('button[data-completed]');
-      const deleteBtn = card.querySelector('.delete-habit');
-
-      toggleBtn?.addEventListener('click', () => {
-        const isCompleted = toggleBtn.getAttribute('data-completed') === 'true';
-        toggleBtn.setAttribute('data-completed', (!isCompleted).toString());
-        toggleBtn.textContent = isCompleted ? 'Marcar como completado' : '✓ Completado';
-        toggleBtn.classList.toggle('bg-green-500');
-        toggleBtn.classList.toggle('bg-gray-200');
-        toggleBtn.classList.toggle('dark:bg-gray-700');
-        toggleBtn.classList.toggle('text-white');
-        toggleBtn.classList.toggle('text-gray-700');
-        toggleBtn.classList.toggle('dark:text-gray-300');
-      });
-
-      deleteBtn?.addEventListener('click', () => {
-        if (confirm('¿Estás seguro de eliminar este hábito?')) {
-          card.style.opacity = '0';
-          card.style.transform = 'scale(0.9)';
-          setTimeout(() => card.remove(), 300);
-        }
-      });
-    });
-
-    // Habit form
-    const form = document.getElementById('habit-form');
-    const iconSelector = document.getElementById('icon-selector');
-    const colorSelector = document.getElementById('color-selector');
-    const selectedIcon = document.getElementById('selected-icon');
-    const selectedColor = document.getElementById('selected-color');
-
-    iconSelector?.addEventListener('click', (e) => {
-      if (e.target.classList.contains('icon-option')) {
-        document.querySelectorAll('.icon-option').forEach(btn => {
-          btn.classList.remove('ring-2', 'ring-blue-500');
-        });
-        e.target.classList.add('ring-2', 'ring-blue-500');
-        selectedIcon.value = e.target.getAttribute('data-icon');
+    // Fetch de API externa - Clima
+    async function fetchWeather() {
+      try {
+        const response = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-34.6037&longitude=-58.3816&current_weather=true');
+        const data = await response.json();
+        console.log('Clima en Buenos Aires:', data.current_weather);
+      } catch (error) {
+        console.error('Error fetching weather:', error);
       }
-    });
-
-    colorSelector?.addEventListener('click', (e) => {
-      if (e.target.classList.contains('color-option')) {
-        document.querySelectorAll('.color-option').forEach(btn => {
-          btn.classList.remove('ring-2', 'ring-blue-500', 'ring-offset-2');
-        });
-        e.target.classList.add('ring-2', 'ring-blue-500', 'ring-offset-2');
-        selectedColor.value = e.target.getAttribute('data-color');
-      }
-    });
-
-    form?.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const name = (document.getElementById('habit-name') as HTMLInputElement).value;
-      const icon = selectedIcon.value;
-      const color = selectedColor.value;
-
-      if (name) {
-        const newHabit = {
-          id: Date.now(),
-          name,
-          icon,
-          color,
-          completed: false,
-          streak: 0
-        };
-
-        const habitsGrid = document.querySelector('#habitos .grid');
-        const newCard = document.createElement('div');
-        newCard.className = 'habit-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1';
-        newCard.setAttribute('data-habit-id', newHabit.id.toString());
-        newCard.innerHTML = `
-          <div class="flex items-center justify-between mb-4">
-            <div class="w-14 h-14 rounded-full flex items-center justify-center text-2xl ${color}">
-              ${icon}
-            </div>
-            <div class="text-right">
-              <p class="text-sm text-gray-500 dark:text-gray-400">Racha</p>
-              <p class="text-2xl font-bold text-gray-800 dark:text-white">0 🔥</p>
-            </div>
-          </div>
-          <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">${name}</h3>
-          <button
-            class="w-full py-3 rounded-lg font-medium transition-all duration-300 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300"
-            data-completed="false"
-          >
-            Marcar como completado
-          </button>
-          <button class="delete-habit mt-2 text-red-500 hover:text-red-600 text-sm">Eliminar</button>
-        `;
-
-        habitsGrid?.prepend(newCard);
-
-        // Add event listeners to new card
-        const toggleBtn = newCard.querySelector('button[data-completed]');
-        const deleteBtn = newCard.querySelector('.delete-habit');
-
-        toggleBtn?.addEventListener('click', () => {
-          const isCompleted = toggleBtn.getAttribute('data-completed') === 'true';
-          toggleBtn.setAttribute('data-completed', (!isCompleted).toString());
-          toggleBtn.textContent = isCompleted ? 'Marcar como completado' : '✓ Completado';
-          toggleBtn.classList.toggle('bg-green-500');
-          toggleBtn.classList.toggle('bg-gray-200');
-          toggleBtn.classList.toggle('dark:bg-gray-700');
-          toggleBtn.classList.toggle('text-white');
-          toggleBtn.classList.toggle('text-gray-700');
-          toggleBtn.classList.toggle('dark:text-gray-300');
-        });
-
-        deleteBtn?.addEventListener('click', () => {
-          if (confirm('¿Estás seguro de eliminar este hábito?')) {
-            newCard.style.opacity = '0';
-            newCard.style.transform = 'scale(0.9)';
-            setTimeout(() => newCard.remove(), 300);
-          }
-        });
-
-        (document.getElementById('habit-name') as HTMLInputElement).value = '';
-        alert('¡Hábito agregado exitosamente!');
-      }
-    });
-
-    // Smooth scroll for navigation
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', (e) => {
-        e.preventDefault();
-        const target = document.querySelector(anchor.getAttribute('href'));
-        target?.scrollIntoView({ behavior: 'smooth' });
-      });
-    });
+    }
+    fetchWeather();
   </script>
 </BaseLayout>
