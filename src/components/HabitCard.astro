@@ -1,0 +1,40 @@
+---
+interface Habit {
+  id: number;
+  name: string;
+  icon: string;
+  color: string;
+  completed: boolean;
+  streak: number;
+}
+
+interface Props {
+  habit: Habit;
+}
+
+const { habit } = Astro.props;
+---
+
+<div class="habit-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1" data-habit-id={habit.id}>
+  <div class="flex items-center justify-between mb-4">
+    <div class={`w-14 h-14 rounded-full flex items-center justify-center text-2xl ${habit.color}`}>
+      {habit.icon}
+    </div>
+    <div class="text-right">
+      <p class="text-sm text-gray-500 dark:text-gray-400">Racha</p>
+      <p class="text-2xl font-bold text-gray-800 dark:text-white">{habit.streak} 🔥</p>
+    </div>
+  </div>
+  <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">{habit.name}</h3>
+  <button
+    class={`w-full py-3 rounded-lg font-medium transition-all duration-300 ${
+      habit.completed
+        ? 'bg-green-500 hover:bg-green-600 text-white'
+        : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300'
+    }`}
+    data-completed={habit.completed}
+  >
+    {habit.completed ? '✓ Completado' : 'Marcar como completado'}
+  </button>
+  <button class="delete-habit mt-2 text-red-500 hover:text-red-600 text-sm">Eliminar</button>
+</div>
