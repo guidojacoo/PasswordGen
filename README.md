@@ -1,102 +1,73 @@
-# Habit Dashboard - Actividad Diagnóstico Frontend
+# Generador de Contraseñas Seguras
 
-Dashboard de seguimiento de hábitos construido con Astro y Tailwind CSS. Permite a los usuarios gestionar sus hábitos diarios, visualizar estadísticas y mantener un registro de su progreso.
+Aplicación web para generar y analizar la fortaleza de contraseñas. Construida con Astro y Tailwind CSS.
 
-## 🚀 Características
+## Características
 
-- **Gestión de hábitos**: Agregar, completar y eliminar hábitos
-- **Seguimiento de rachas**: Visualiza tu racha actual de cada hábito
-- **Dark mode**: Interfaz clara y oscura con persistencia de preferencia
-- **Estadísticas**: Panel con métricas de progreso y rendimiento semanal
-- **Responsive**: Diseño adaptable a dispositivos móviles
-- **Animaciones**: Transiciones suaves y efectos visuales
-- **API externa**: Integración con Open-Meteo para datos del clima
+- **Generador de contraseñas**: Crea contraseñas aleatorias con opciones personalizables
+- **Analizador de fortaleza**: Evalúa cualquier contraseña y muestra su nivel de seguridad
+- **Opciones configurables**:
+  - Longitud de 4 a 50 caracteres
+  - Incluir/excluir mayúsculas, minúsculas, números y símbolos
+  - Excluir caracteres ambiguos (I, l, 1, O, 0)
+- **Copia rápida**: Un clic para copiar la contraseña al portapapeles
+- **Diseño responsive**: Funciona en desktop y móviles
 
-## 🛠️ Herramientas y Tecnologías
+## Tecnologías
 
-| Tecnología | Versión | Propósito |
-|------------|---------|-----------|
-| Astro | ^5.18.1 | Framework web |
-| Tailwind CSS | - | Estilos y diseño responsive |
-| JavaScript | ES6+ | Interactividad y lógica |
-| Open-Meteo API | - | Datos del clima |
+- **Astro** - Framework web
+- **Tailwind CSS** - Estilos
+- **JavaScript vanilla** - Lógica sin frameworks pesados
 
-## 📁 Estructura del Proyecto
+## Estructura
 
 ```
 tpfront/
 ├── src/
-│   ├── components/
-│   │   ├── HabitCard.astro      # Card de hábito individual
-│   │   ├── HabitForm.astro      # Formulario nuevo hábito
-│   │   ├── StatsCard.astro      # Card de estadísticas
-│   │   └── Header.astro         # Header con navegación
 │   ├── layouts/
-│   │   └── BaseLayout.astro     # Layout base HTML
-│   ├── pages/
-│   │   └── index.astro          # Página principal
-│   ├── scripts/
-│   │   └── main.js              # Lógica JavaScript
-│   └── styles/
-│       └── global.css           # Estilos personalizados
+│   │   └── BaseLayout.astro
+│   └── pages/
+│       └── index.astro
 ├── package.json
 └── README.md
 ```
 
-## 🚀 Instrucciones para Ejecutar
+## Cómo usar
 
-### Prerrequisitos
+### Desarrollo
 
-- Node.js 18+ instalado
-- npm o pnpm
-
-### Pasos
-
-1. Clonar el repositorio:
-```bash
-git clone <url-del-repositorio>
-cd tpfront
-```
-
-2. Instalar dependencias:
 ```bash
 npm install
-```
-
-3. Iniciar servidor de desarrollo:
-```bash
 npm run dev
 ```
 
-4. Abrir en el navegador:
-```
-http://localhost:4321
-```
+Abrir http://localhost:4321
 
-### Build para producción
+### Producción
 
 ```bash
 npm run build
 ```
 
-## 📊 Requisitos Cumplidos
+El contenido se genera en `dist/`
 
-### Requisitos Mínimos
-- ✅ Página principal (`index.astro`)
-- ✅ 3 secciones (Inicio, Hábitos, Estadísticas)
-- ✅ Responsive básico (Tailwind CSS)
-- ✅ JavaScript con eventos y manipulación del DOM
+## Criterios de fortaleza
 
-### Créditos Extra
-- ✅ Componentes reutilizables (4 componentes Astro)
-- ✅ Animaciones CSS personalizadas
-- ✅ Tailwind CSS como librería
-- ✅ Fetch a API externa (Open-Meteo)
-- ✅ Dark mode con persistencia
+La aplicación evalúa:
 
-## 🌐 Deploy
+**Suma puntos:**
+- Longitud (8+, 12+, 16+ caracteres)
+- Uso de mayúsculas
+- Uso de minúsculas
+- Uso de números
+- Uso de símbolos
 
-Este proyecto está listo para deploy en:
+**Resta puntos:**
+- Solo letras o solo números
+- Caracteres repetidos
+- Patrones comunes (123, abc, qwerty, password)
+
+## Deploy
 
 ### Vercel
 ```bash
@@ -105,19 +76,10 @@ vercel deploy
 ```
 
 ### Netlify
-```bash
-npm run build
-# Conectar repositorio en app.netlify.com
-```
+Conectar el repositorio en app.netlify.com con:
+- Build command: `npm run build`
+- Publish directory: `dist/`
 
-**Configuración recomendada:**
-- **Build command**: `npm run build`
-- **Publish directory**: `dist/`
+---
 
-## 👨‍💻 Autor
-
-Desarrollado como parte de la Actividad Diagnóstico Frontend.
-
-## 📄 Licencia
-
-MIT
+Hecho para la Actividad Diagnóstico Frontend

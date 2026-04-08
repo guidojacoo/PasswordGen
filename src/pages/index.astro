@@ -1,154 +1,415 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Header from '../components/Header.astro';
-import StatsCard from '../components/StatsCard.astro';
-import HabitCard from '../components/HabitCard.astro';
-import HabitForm from '../components/HabitForm.astro';
-
-const initialHabits = [
-  { id: 1, name: 'Leer 30 minutos', icon: '📚', color: 'bg-blue-100 dark:bg-blue-900', completed: false, streak: 5 },
-  { id: 2, name: 'Hacer ejercicio', icon: '💪', color: 'bg-green-100 dark:bg-green-900', completed: true, streak: 12 },
-  { id: 3, name: 'Beber 2L de agua', icon: '💧', color: 'bg-purple-100 dark:bg-purple-900', completed: false, streak: 8 },
-  { id: 4, name: 'Meditar', icon: '🧘', color: 'bg-orange-100 dark:bg-orange-900', completed: true, streak: 21 },
-  { id: 5, name: 'Correr 5km', icon: '🏃', color: 'bg-pink-100 dark:bg-pink-900', completed: false, streak: 3 },
-  { id: 6, name: 'Dormir 8 horas', icon: '😴', color: 'bg-yellow-100 dark:bg-yellow-900', completed: true, streak: 15 },
-];
 ---
 
-<BaseLayout title="Habit Dashboard">
-  <Header darkMode={false} />
-
-  <main class="container mx-auto px-4 py-8">
-    <!-- Sección Inicio -->
-    <section id="inicio" class="mb-12">
+<BaseLayout title="Generador de Contraseñas Seguras">
+  <div class="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 py-12 px-4">
+    <div class="max-w-2xl mx-auto">
+      <!-- Header -->
       <div class="text-center mb-8">
-        <h2 class="text-4xl font-bold text-gray-800 dark:text-white mb-2">
-          Bienvenido a tu Dashboard de Hábitos
-        </h2>
-        <p class="text-gray-600 dark:text-gray-400 text-lg">
-          Seguimiento diario de tus hábitos para construir mejores rutinas
-        </p>
+        <h1 class="text-4xl md:text-5xl font-bold text-white mb-2">
+          🔐 Generador de Contraseñas
+        </h1>
+        <p class="text-gray-400 text-lg">Crea contraseñas seguras o analiza las tuyas</p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatsCard title="Total Hábitos" value="6" icon="📋" color="bg-blue-100 dark:bg-blue-900" change="+2 esta semana" />
-        <StatsCard title="Completados Hoy" value="3" icon="✓" color="bg-green-100 dark:bg-green-900" change="50% completado" />
-        <StatsCard title="Racha Máxima" value="21" icon="🔥" color="bg-orange-100 dark:bg-orange-900" />
-        <StatsCard title="Puntaje" value="85%" icon="⭐" color="bg-purple-100 dark:bg-purple-900" change="+5% vs ayer" />
-      </div>
-    </section>
-
-    <!-- Sección Hábitos -->
-    <section id="habitos" class="mb-12">
-      <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-6">Mis Hábitos</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {initialHabits.map(habit => (
-          <HabitCard habit={habit} />
-        ))}
-      </div>
-    </section>
-
-    <!-- Sección Agregar -->
-    <section class="mb-12">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <HabitForm />
-
-        <div class="bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg p-6 text-white">
-          <h2 class="text-xl font-bold mb-4">💡 Consejo del Día</h2>
-          <p class="text-lg mb-4">
-            "La consistencia es más importante que la intensidad. Es mejor hacer 5 minutos diarios
-            que una hora una vez a la semana."
-          </p>
-          <div class="mt-6 p-4 bg-white/20 rounded-lg backdrop-blur-sm">
-            <p class="text-sm font-medium">Progreso Semanal</p>
-            <div class="w-full bg-white/30 rounded-full h-4 mt-2">
-              <div class="bg-white h-4 rounded-full transition-all duration-500" style="width: 65%"></div>
-            </div>
-            <p class="text-sm mt-2">65% completado (13/20 hábitos)</p>
+      <!-- Password Input/Display -->
+      <div class="bg-gray-800 rounded-2xl p-6 mb-6 shadow-2xl border border-gray-700">
+        <label class="block text-gray-300 font-medium mb-2">
+          Ingresa o genera una contraseña
+        </label>
+        <div class="relative">
+          <input
+            type="text"
+            id="password-display"
+            class="w-full bg-gray-900 text-white text-2xl md:text-3xl font-mono py-4 px-4 pr-32 rounded-xl border border-gray-600 focus:outline-none focus:border-purple-500 tracking-wider"
+            placeholder="Escribe o genera tu contraseña"
+            autocomplete="off"
+          />
+          <div class="absolute right-2 top-1/2 -translate-y-1/2 flex gap-2">
+            <button
+              id="copy-btn"
+              class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-all hover:scale-105 active:scale-95"
+              title="Copiar"
+            >
+              📋
+            </button>
+            <button
+              id="generate-btn"
+              class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-all hover:scale-105 active:scale-95"
+              title="Generar nueva"
+            >
+              🔄
+            </button>
           </div>
         </div>
-      </div>
-    </section>
 
-    <!-- Sección Estadísticas -->
-    <section id="estadisticas" class="mb-12">
-      <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-6">Estadísticas Detalladas</h2>
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Rendimiento por Hábito</h3>
-            <div class="space-y-3">
-              {initialHabits.map(habit => (
-                <div class="flex items-center gap-3">
-                  <span class="text-xl">{habit.icon}</span>
-                  <div class="flex-1">
-                    <div class="flex justify-between mb-1">
-                      <span class="text-sm text-gray-600 dark:text-gray-400">{habit.name}</span>
-                      <span class="text-sm font-medium text-gray-800 dark:text-white">{habit.streak} días</span>
-                    </div>
-                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                      <div
-                        class="h-2 rounded-full transition-all duration-500"
-                        style={`width: ${Math.min(habit.streak * 5, 100)}%; background: ${habit.completed ? '#22c55e' : '#3b82f6'}`}
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+        <!-- Strength Meter -->
+        <div class="mt-4">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-gray-400 text-sm">Fortaleza:</span>
+            <span id="strength-text" class="font-semibold text-lg"></span>
           </div>
-          <div>
-            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Actividad Semanal</h3>
-            <div class="flex justify-between items-end h-40">
-              {['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'].map((day, i) => {
-                const heights = [60, 80, 45, 90, 70, 50, 65];
-                return (
-                  <div class="flex flex-col items-center gap-2">
-                    <div
-                      class={`w-8 rounded-lg transition-all duration-300 ${
-                        i === 3 ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-600'
-                      }`}
-                      style={`height: ${heights[i]}%`}
-                    ></div>
-                    <span class="text-xs text-gray-600 dark:text-gray-400">{day}</span>
-                  </div>
-                );
-              })}
-            </div>
+          <div class="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
+            <div
+              id="strength-bar"
+              class="h-full rounded-full transition-all duration-500 ease-out"
+              style="width: 0%"
+            ></div>
           </div>
+          <div id="strength-details" class="mt-3 text-sm text-gray-400"></div>
         </div>
       </div>
-    </section>
-  </main>
 
-  <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-12">
-    <div class="container mx-auto px-4 py-6 text-center text-gray-600 dark:text-gray-400">
-      <p>© 2026 Habit Dashboard - Actividad Diagnóstico Frontend</p>
-      <p class="text-sm mt-2">Desarrollado con Astro + Tailwind CSS</p>
+      <!-- Options -->
+      <div class="bg-gray-800 rounded-2xl p-6 shadow-2xl border border-gray-700 mb-6">
+        <h2 class="text-xl font-bold text-white mb-4">⚙️ Opciones de generación</h2>
+
+        <!-- Length Slider -->
+        <div class="mb-6">
+          <div class="flex justify-between items-center mb-2">
+            <label class="text-gray-300 font-medium">Longitud</label>
+            <span id="length-value" class="text-purple-400 font-bold text-xl">16</span>
+          </div>
+          <input
+            type="range"
+            id="length-slider"
+            min="4"
+            max="50"
+            value="16"
+            class="w-full h-3 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-purple-500"
+          />
+          <div class="flex justify-between text-xs text-gray-500 mt-1">
+            <span>4</span>
+            <span>50</span>
+          </div>
+        </div>
+
+        <!-- Checkboxes -->
+        <div class="grid grid-cols-2 gap-4">
+          <label class="flex items-center gap-3 cursor-pointer group">
+            <input
+              type="checkbox"
+              id="uppercase"
+              checked
+              class="w-5 h-5 rounded bg-gray-700 border-gray-600 text-purple-600 focus:ring-purple-500 focus:ring-2"
+            />
+            <span class="text-gray-300 group-hover:text-white transition-colors">Mayúsculas (A-Z)</span>
+          </label>
+          <label class="flex items-center gap-3 cursor-pointer group">
+            <input
+              type="checkbox"
+              id="lowercase"
+              checked
+              class="w-5 h-5 rounded bg-gray-700 border-gray-600 text-purple-600 focus:ring-purple-500 focus:ring-2"
+            />
+            <span class="text-gray-300 group-hover:text-white transition-colors">Minúsculas (a-z)</span>
+          </label>
+          <label class="flex items-center gap-3 cursor-pointer group">
+            <input
+              type="checkbox"
+              id="numbers"
+              checked
+              class="w-5 h-5 rounded bg-gray-700 border-gray-600 text-purple-600 focus:ring-purple-500 focus:ring-2"
+            />
+            <span class="text-gray-300 group-hover:text-white transition-colors">Números (0-9)</span>
+          </label>
+          <label class="flex items-center gap-3 cursor-pointer group">
+            <input
+              type="checkbox"
+              id="symbols"
+              checked
+              class="w-5 h-5 rounded bg-gray-700 border-gray-600 text-purple-600 focus:ring-purple-500 focus:ring-2"
+            />
+            <span class="text-gray-300 group-hover:text-white transition-colors">Símbolos (!@#)</span>
+          </label>
+        </div>
+
+        <!-- Exclude Ambiguous -->
+        <label class="flex items-center gap-3 cursor-pointer group mt-4">
+          <input
+            type="checkbox"
+            id="exclude-ambiguous"
+            class="w-5 h-5 rounded bg-gray-700 border-gray-600 text-purple-600 focus:ring-purple-500 focus:ring-2"
+          />
+          <span class="text-gray-300 group-hover:text-white transition-colors">Excluir caracteres ambiguos (I, l, 1, O, 0)</span>
+        </label>
+      </div>
+
+      <!-- Security Info -->
+      <div class="bg-gray-800 rounded-2xl p-6 shadow-2xl border border-gray-700">
+        <h2 class="text-xl font-bold text-white mb-4">🛡️ Consejos de Seguridad</h2>
+        <ul class="space-y-2 text-gray-400">
+          <li class="flex items-start gap-2">
+            <span class="text-green-400">✓</span>
+            Usa al menos 12 caracteres
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-green-400">✓</span>
+            Combina mayúsculas, minúsculas, números y símbolos
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-green-400">✓</span>
+            No uses información personal
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-green-400">✓</span>
+            Usa una contraseña única por cuenta
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-green-400">✓</span>
+            Considera usar un gestor de contraseñas
+          </li>
+        </ul>
+      </div>
     </div>
-  </footer>
+  </div>
 
-  <script src="../scripts/main.js" client:load></script>
   <script>
-    // Dark mode toggle básico (se complementa con main.js)
-    const themeToggle = document.getElementById('theme-toggle');
-    const html = document.documentElement;
+    // Caracteres disponibles
+    const CHAR_SETS = {
+      uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+      lowercase: 'abcdefghijklmnopqrstuvwxyz',
+      numbers: '0123456789',
+      symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+    };
 
-    if (localStorage.getItem('darkMode') === 'true') {
-      html.classList.add('dark');
-      themeToggle.textContent = '☀️';
+    const AMBIGUOUS = 'Il1O0';
+
+    // Generar contraseña
+    function generatePassword() {
+      const length = parseInt(document.getElementById('length-slider').value);
+      const useUppercase = document.getElementById('uppercase').checked;
+      const useLowercase = document.getElementById('lowercase').checked;
+      const useNumbers = document.getElementById('numbers').checked;
+      const useSymbols = document.getElementById('symbols').checked;
+      const excludeAmbiguous = document.getElementById('exclude-ambiguous').checked;
+
+      let chars = '';
+      if (useUppercase) chars += CHAR_SETS.uppercase;
+      if (useLowercase) chars += CHAR_SETS.lowercase;
+      if (useNumbers) chars += CHAR_SETS.numbers;
+      if (useSymbols) chars += CHAR_SETS.symbols;
+
+      if (excludeAmbiguous) {
+        for (const char of AMBIGUOUS) {
+          chars = chars.replace(new RegExp(char, 'g'), '');
+        }
+      }
+
+      if (chars === '') {
+        return '';
+      }
+
+      // Al menos un carácter de cada tipo seleccionado
+      let password = '';
+      const required = [];
+
+      if (useUppercase) required.push(CHAR_SETS.uppercase);
+      if (useLowercase) required.push(CHAR_SETS.lowercase);
+      if (useNumbers) required.push(CHAR_SETS.numbers);
+      if (useSymbols) required.push(CHAR_SETS.symbols);
+
+      for (const set of required) {
+        password += set[Math.floor(Math.random() * set.length)];
+      }
+
+      // Rellenar el resto
+      for (let i = password.length; i < length; i++) {
+        password += chars[Math.floor(Math.random() * chars.length)];
+      }
+
+      // Mezclar
+      return password.split('').sort(() => Math.random() - 0.5).join('');
     }
 
-    // Fetch de API externa - Clima
-    async function fetchWeather() {
+    // Calcular fortaleza
+    function calculateStrength(password) {
+      if (!password) return { score: 0, details: [] };
+
+      let score = 0;
+      const details = [];
+
+      // Longitud
+      if (password.length >= 8) {
+        score += 20;
+        details.push('✓ Longitud adecuada');
+      }
+      if (password.length >= 12) {
+        score += 15;
+        details.push('✓ Buena longitud');
+      }
+      if (password.length >= 16) {
+        score += 15;
+        details.push('✓ Excelente longitud');
+      }
+
+      // Mayúsculas
+      if (/[A-Z]/.test(password)) {
+        score += 15;
+        details.push('✓ Incluye mayúsculas');
+      }
+
+      // Minúsculas
+      if (/[a-z]/.test(password)) {
+        score += 15;
+        details.push('✓ Incluye minúsculas');
+      }
+
+      // Números
+      if (/[0-9]/.test(password)) {
+        score += 10;
+        details.push('✓ Incluye números');
+      }
+
+      // Símbolos
+      if (/[!@#$%^&*()_+\-=\[\]{}|;:,.<>?]/.test(password)) {
+        score += 15;
+        details.push('✓ Incluye símbolos');
+      }
+
+      // Patrones comunes (restar puntos)
+      if (/^[a-zA-Z]+$/.test(password)) {
+        score -= 20;
+        details.push('✗ Solo letras (débil)');
+      }
+      if (/^[0-9]+$/.test(password)) {
+        score -= 20;
+        details.push('✗ Solo números (débil)');
+      }
+      if (/(.)\1{2,}/.test(password)) {
+        score -= 10;
+        details.push('✗ Caracteres repetidos');
+      }
+      if (/^(123|abc|qwerty|password)/i.test(password)) {
+        score -= 30;
+        details.push('✗ Patrón común detectado');
+      }
+
+      // Normalizar
+      score = Math.max(0, Math.min(100, score));
+
+      return { score, details };
+    }
+
+    // Obtener texto de fortaleza
+    function getStrengthText(score) {
+      if (score === 0) return { text: '', color: '' };
+      if (score < 30) return { text: '🔴 Muy Débil', color: 'text-red-500' };
+      if (score < 50) return { text: '🟠 Débil', color: 'text-orange-500' };
+      if (score < 70) return { text: '🟡 Regular', color: 'text-yellow-500' };
+      if (score < 90) return { text: '🟢 Buena', color: 'text-green-500' };
+      return { text: '🟢🟢 Excelente', color: 'text-emerald-400' };
+    }
+
+    // Obtener color de la barra
+    function getStrengthColor(score) {
+      if (score < 30) return 'bg-red-500';
+      if (score < 50) return 'bg-orange-500';
+      if (score < 70) return 'bg-yellow-500';
+      if (score < 90) return 'bg-green-500';
+      return 'bg-emerald-400';
+    }
+
+    // Actualizar UI
+    function updateUI(password) {
+      const display = document.getElementById('password-display');
+      const strengthBar = document.getElementById('strength-bar');
+      const strengthText = document.getElementById('strength-text');
+      const strengthDetails = document.getElementById('strength-details');
+
+      display.value = password;
+
+      const { score, details } = calculateStrength(password);
+      const { text, color } = getStrengthText(score);
+
+      strengthBar.style.width = `${score}%`;
+      strengthBar.className = `h-full rounded-full transition-all duration-500 ease-out ${getStrengthColor(score)}`;
+      strengthText.textContent = text;
+      strengthText.className = `font-semibold text-lg ${color}`;
+      strengthDetails.innerHTML = details.map(d => `<span class="${d.startsWith('✗') ? 'text-red-400' : 'text-green-400'}">${d}</span>`).join('<br>');
+    }
+
+    // Copiar al portapapeles
+    async function copyToClipboard(text) {
       try {
-        const response = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-34.6037&longitude=-58.3816&current_weather=true');
-        const data = await response.json();
-        console.log('Clima en Buenos Aires:', data.current_weather);
-      } catch (error) {
-        console.error('Error fetching weather:', error);
+        await navigator.clipboard.writeText(text);
+        const btn = document.getElementById('copy-btn');
+        const original = btn.textContent;
+        btn.textContent = '✓';
+        btn.classList.add('bg-green-600');
+        setTimeout(() => {
+          btn.textContent = original;
+          btn.classList.remove('bg-green-600');
+        }, 1500);
+      } catch (err) {
+        // Fallback
+        const display = document.getElementById('password-display');
+        display.select();
+        document.execCommand('copy');
       }
     }
-    fetchWeather();
+
+    // Event Listeners
+    document.addEventListener('DOMContentLoaded', () => {
+      const generateBtn = document.getElementById('generate-btn');
+      const copyBtn = document.getElementById('copy-btn');
+      const lengthSlider = document.getElementById('length-slider');
+      const lengthValue = document.getElementById('length-value');
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+      const passwordDisplay = document.getElementById('password-display');
+
+      // Generar contraseña inicial
+      const initialPassword = generatePassword();
+      updateUI(initialPassword);
+
+      // Botón generar
+      generateBtn.addEventListener('click', () => {
+        const password = generatePassword();
+        updateUI(password);
+      });
+
+      // Botón copiar
+      copyBtn.addEventListener('click', () => {
+        const password = passwordDisplay.value;
+        if (password) copyToClipboard(password);
+      });
+
+      // Slider de longitud
+      lengthSlider.addEventListener('input', () => {
+        lengthValue.textContent = lengthSlider.value;
+        const password = generatePassword();
+        updateUI(password);
+      });
+
+      // Checkboxes
+      checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+          const password = generatePassword();
+          updateUI(password);
+        });
+      });
+
+      // Input manual - analizar en tiempo real
+      passwordDisplay.addEventListener('input', () => {
+        const password = passwordDisplay.value;
+        if (password) {
+          const { score, details } = calculateStrength(password);
+          const { text, color } = getStrengthText(score);
+
+          document.getElementById('strength-bar').style.width = `${score}%`;
+          document.getElementById('strength-bar').className = `h-full rounded-full transition-all duration-500 ease-out ${getStrengthColor(score)}`;
+          document.getElementById('strength-text').textContent = text;
+          document.getElementById('strength-text').className = `font-semibold text-lg ${color}`;
+          document.getElementById('strength-details').innerHTML = details.map(d => `<span class="${d.startsWith('✗') ? 'text-red-400' : 'text-green-400'}">${d}</span>`).join('<br>');
+        }
+      });
+
+      // Click en el display para copiar
+      passwordDisplay.addEventListener('click', () => {
+        const password = passwordDisplay.value;
+        if (password) copyToClipboard(password);
+      });
+    });
   </script>
 </BaseLayout>
