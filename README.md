@@ -22,12 +22,14 @@ Aplicación web para generar y analizar la fortaleza de contraseñas. Construida
 ## Estructura
 
 ```
-tpfront/
+PasswordGen/
 ├── src/
 │   ├── layouts/
 │   │   └── BaseLayout.astro
 │   └── pages/
 │       └── index.astro
+├── astro.config.mjs
+├── tailwind.config.mjs
 ├── package.json
 └── README.md
 ```

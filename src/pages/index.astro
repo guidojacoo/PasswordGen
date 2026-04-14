@@ -44,6 +44,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
         </div>
 
+        <!-- Aviso sin conjunto seleccionado -->
+        <p id="no-charset-warning" class="hidden mt-3 text-sm text-red-400">
+          ⚠️ Selecciona al menos un tipo de carácter para generar una contraseña.
+        </p>
+
         <!-- Strength Meter -->
         <div class="mt-4">
           <div class="flex justify-between items-center mb-2">
@@ -174,7 +179,26 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?'
     };
 
-    const AMBIGUOUS = 'Il1O0';
+    const AMBIGUOUS = new Set('Il1O0');
+
+    // Número aleatorio criptográficamente seguro en [0, max) sin sesgo de módulo
+    function secureRandom(max) {
+      const limit = 0x100000000 - (0x100000000 % max);
+      const array = new Uint32Array(1);
+      do {
+        crypto.getRandomValues(array);
+      } while (array[0] >= limit);
+      return array[0] % max;
+    }
+
+    // Mezcla Fisher-Yates usando números seguros
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = secureRandom(i + 1);
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
 
     // Generar contraseña
     function generatePassword() {
@@ -185,42 +209,37 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       const useSymbols = document.getElementById('symbols').checked;
       const excludeAmbiguous = document.getElementById('exclude-ambiguous').checked;
 
-      let chars = '';
-      if (useUppercase) chars += CHAR_SETS.uppercase;
-      if (useLowercase) chars += CHAR_SETS.lowercase;
-      if (useNumbers) chars += CHAR_SETS.numbers;
-      if (useSymbols) chars += CHAR_SETS.symbols;
+      const filter = (set) =>
+        excludeAmbiguous ? set.split('').filter(c => !AMBIGUOUS.has(c)).join('') : set;
 
-      if (excludeAmbiguous) {
-        for (const char of AMBIGUOUS) {
-          chars = chars.replace(new RegExp(char, 'g'), '');
-        }
-      }
+      let chars = '';
+      if (useUppercase) chars += filter(CHAR_SETS.uppercase);
+      if (useLowercase) chars += filter(CHAR_SETS.lowercase);
+      if (useNumbers) chars += filter(CHAR_SETS.numbers);
+      if (useSymbols) chars += filter(CHAR_SETS.symbols);
 
       if (chars === '') {
         return '';
       }
 
       // Al menos un carácter de cada tipo seleccionado
-      let password = '';
-      const required = [];
+      const password = [];
+      const requiredSets = [];
+      if (useUppercase) requiredSets.push(filter(CHAR_SETS.uppercase));
+      if (useLowercase) requiredSets.push(filter(CHAR_SETS.lowercase));
+      if (useNumbers) requiredSets.push(filter(CHAR_SETS.numbers));
+      if (useSymbols) requiredSets.push(filter(CHAR_SETS.symbols));
 
-      if (useUppercase) required.push(CHAR_SETS.uppercase);
-      if (useLowercase) required.push(CHAR_SETS.lowercase);
-      if (useNumbers) required.push(CHAR_SETS.numbers);
-      if (useSymbols) required.push(CHAR_SETS.symbols);
-
-      for (const set of required) {
-        password += set[Math.floor(Math.random() * set.length)];
+      for (const set of requiredSets) {
+        if (set.length > 0) password.push(set[secureRandom(set.length)]);
       }
 
       // Rellenar el resto
       for (let i = password.length; i < length; i++) {
-        password += chars[Math.floor(Math.random() * chars.length)];
+        password.push(chars[secureRandom(chars.length)]);
       }
 
-      // Mezclar
-      return password.split('').sort(() => Math.random() - 0.5).join('');
+      return shuffle(password).join('');
     }
 
     // Calcular fortaleza
@@ -281,8 +300,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         score -= 10;
         details.push('✗ Caracteres repetidos');
       }
-      if (/^(123|abc|qwerty|password)/i.test(password)) {
-        score -= 30;
+      if (/(123|abc|qwerty|password)/i.test(password)) {
+        score -= 15;
         details.push('✗ Patrón común detectado');
       }
 
@@ -317,7 +336,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       const strengthBar = document.getElementById('strength-bar');
       const strengthText = document.getElementById('strength-text');
       const strengthDetails = document.getElementById('strength-details');
+      const warning = document.getElementById('no-charset-warning');
 
+      if (password === '') {
+        display.value = '';
+        warning.classList.remove('hidden');
+        strengthBar.style.width = '0%';
+        strengthText.textContent = '';
+        strengthDetails.innerHTML = '';
+        return;
+      }
+
+      warning.classList.add('hidden');
       display.value = password;
 
       const { score, details } = calculateStrength(password);
@@ -360,13 +390,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       const passwordDisplay = document.getElementById('password-display');
 
       // Generar contraseña inicial
-      const initialPassword = generatePassword();
-      updateUI(initialPassword);
+      updateUI(generatePassword());
 
       // Botón generar
       generateBtn.addEventListener('click', () => {
-        const password = generatePassword();
-        updateUI(password);
+        updateUI(generatePassword());
       });
 
       // Botón copiar
@@ -378,30 +406,27 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       // Slider de longitud
       lengthSlider.addEventListener('input', () => {
         lengthValue.textContent = lengthSlider.value;
-        const password = generatePassword();
-        updateUI(password);
+        updateUI(generatePassword());
       });
 
       // Checkboxes
       checkboxes.forEach(checkbox => {
         checkbox.addEventListener('change', () => {
-          const password = generatePassword();
-          updateUI(password);
+          updateUI(generatePassword());
         });
       });
 
       // Input manual - analizar en tiempo real
       passwordDisplay.addEventListener('input', () => {
         const password = passwordDisplay.value;
+        const warning = document.getElementById('no-charset-warning');
+        warning.classList.add('hidden');
         if (password) {
-          const { score, details } = calculateStrength(password);
-          const { text, color } = getStrengthText(score);
-
-          document.getElementById('strength-bar').style.width = `${score}%`;
-          document.getElementById('strength-bar').className = `h-full rounded-full transition-all duration-500 ease-out ${getStrengthColor(score)}`;
-          document.getElementById('strength-text').textContent = text;
-          document.getElementById('strength-text').className = `font-semibold text-lg ${color}`;
-          document.getElementById('strength-details').innerHTML = details.map(d => `<span class="${d.startsWith('✗') ? 'text-red-400' : 'text-green-400'}">${d}</span>`).join('<br>');
+          updateUI(password);
+        } else {
+          document.getElementById('strength-bar').style.width = '0%';
+          document.getElementById('strength-text').textContent = '';
+          document.getElementById('strength-details').innerHTML = '';
         }
       });
 
